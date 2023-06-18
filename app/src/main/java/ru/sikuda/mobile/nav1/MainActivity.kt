@@ -1,12 +1,11 @@
 package ru.sikuda.mobile.nav1
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -28,13 +27,19 @@ class MainActivity : ComponentActivity() {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     MyNavHost(navHostController = navController)
                 }
             }
         }
     }
+}
+
+object NavRoute {
+    val SCREEN_A = "ScreenA"
+    val SCREEN_B = "ScreenB"
+    val SCREEN_C = "ScreenC"
 }
 
 @Composable
@@ -45,36 +50,32 @@ fun MyNavHost(navHostController: NavHostController) {
     ) {
         val routeWithArguments = "${NavRoute.SCREEN_B}/{argument}"
         val routeWithArgumentsC = "${NavRoute.SCREEN_C}/{visible}"
-        composable(NavRoute.SCREEN_A){
-            ScreenA{
+
+        composable(NavRoute.SCREEN_A) {
+            ScreenA {
                 navHostController.navigate("${NavRoute.SCREEN_B}/Hakuna Matata")
             }
         }
         composable(
             routeWithArguments,
-            arguments = listOf(navArgument(name = "argument"){})
-        ){ navEntry ->
-            ScreenB(navEntry.arguments?.getString("argument")){
+            arguments = listOf(navArgument(name = "argument") {})
+        ) { navEntry ->
+            ScreenB(navEntry.arguments?.getString("argument")) {
                 navHostController.navigate("${NavRoute.SCREEN_C}/false")
             }
         }
         composable(
             routeWithArgumentsC,
-            arguments = listOf(navArgument("visible"){
+            arguments = listOf(navArgument("visible") {
                 type = NavType.BoolType
             }),
-        ){
-            ScreenC(it.arguments?.getBoolean("visible")){
-                navHostController.navigate(NavRoute.SCREEN_A){
-                    popUpTo(NavRoute.SCREEN_A){inclusive = true}
+        ) {
+            ScreenC(it.arguments?.getBoolean("visible")) {
+                navHostController.navigate(NavRoute.SCREEN_A) {
+                    popUpTo(NavRoute.SCREEN_A) { inclusive = true }
                 }
             }
         }
 
     }
-}
-object NavRoute {
-    val SCREEN_A = "ScreenA"
-    val SCREEN_B = "ScreenB"
-    val SCREEN_C = "ScreenC"
 }
